@@ -63,32 +63,7 @@ public class BundleInfo implements Serializable
       if (location == null)
          throw new IllegalArgumentException("Location cannot be null");
 
-      // Try location as URL
-      URL url = null;
-      try
-      {
-         url = new URL(location);
-      }
-      catch (MalformedURLException ex)
-      {
-         // ignore
-      }
-
-      // Try location as File
-      if (url == null)
-      {
-         try
-         {
-            File file = new File(location);
-            if (file.exists())
-               url = file.toURI().toURL();
-         }
-         catch (MalformedURLException e)
-         {
-            // ignore
-         }
-      }
-
+      URL url = getRealLocation(location);
       if (url == null)
          throw new IllegalArgumentException("Cannot obtain root url from: " + location);
       
@@ -159,10 +134,17 @@ public class BundleInfo implements Serializable
    public VirtualFile getRoot()
    {
       if (rootFile == null)
-      {
          rootFile = toVirtualFile(rootURL);
-      }
+      
       return rootFile;
+   }
+
+   /**
+    * Get the bundle root url
+    */
+   public URL getRootURL()
+   {
+      return toURL(getRoot());
    }
 
    /**
@@ -187,7 +169,7 @@ public class BundleInfo implements Serializable
       {
          try
          {
-            manifest = VFSUtils.getManifest(toVirtualFile(rootURL));
+            manifest = VFSUtils.getManifest(getRoot());
          }
          catch (Exception ex)
          {
@@ -195,6 +177,45 @@ public class BundleInfo implements Serializable
          }
       }
       return manifest;
+   }
+
+   private static URL getRealLocation(String location)
+   {
+      // Try location as URL
+      URL url = null;
+      try
+      {
+         url = new URL(location);
+      }
+      catch (MalformedURLException ex)
+      {
+         // ignore
+      }
+
+      // Try location as File
+      if (url == null)
+      {
+         try
+         {
+            File file = new File(location);
+            if (file.exists())
+               url = file.toURI().toURL();
+         }
+         catch (MalformedURLException e)
+         {
+            // ignore
+         }
+      }
+      
+      // Try to prefix the location with the test archive directory
+      if (url == null)
+      {
+         String prefix = System.getProperty("test.archive.directory", "target/test-libs");
+         if (new File(prefix).exists())
+            return getRealLocation(prefix + File.separator + location);
+      }
+         
+      return url;
    }
 
    private static VirtualFile toVirtualFile(URL url)

@@ -19,42 +19,61 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.osgi.spi;
+package org.jboss.osgi.spi.util;
 
 //$Id$
 
+import java.util.Dictionary;
+import java.util.Enumeration;
+
 /**
- * JBossOSGi Constants
+ * An unmodifieable dictionary.
  * 
  * @author thomas.diesler@jboss.com
- * @since 04-Mar-2009
+ * @since 02-Dec-2009
  */
-public interface OSGiConstants
+@SuppressWarnings("rawtypes")
+public class UnmodifiableDictionary extends Dictionary
 {
-   /** The JBossOSGi domain 'jboss.osgi' */
-   String DOMAIN_NAME = "jboss.osgi";
-   
-   /**
-    * If set to 'true' bundles can be deployed in any order. Deployed bundle will get started when their dependencies can be resolved.
-    * If set to 'false' bundles must be deployed in the order that is required to start them.
-    * 
-    * The default is 'true' 
-    */
-   String PROPERTY_DEFERRED_START = "org.jboss.osgi.deferred.start";
+   private final Dictionary delegate;
 
-   /**
-    * The JBossOSGi runtime system property that denotes the path to the runtime
-    */
-   String OSGI_HOME = "osgi.home";
+   public UnmodifiableDictionary(Dictionary wrapped)
+   {
+      this.delegate = wrapped;
+   }
 
-   /**
-    * The JBossOSGi runtime system property that denotes the path to the active runtime profile
-    */
-   String OSGI_SERVER_HOME = "osgi.server.home";
+   public Enumeration elements()
+   {
+      return delegate.elements();
+   }
 
-   /**
-    * A JBossOSGi deployment unit attachment key that containe the bundle's symbolic name. 
-    */
-   String KEY_BUNDLE_SYMBOLIC_NAME = "org.jboss.osgi.bundle.symbolic.name";
+   public Object get(Object key)
+   {
+      return delegate.get(key);
+   }
 
+   public boolean isEmpty()
+   {
+      return delegate.isEmpty();
+   }
+
+   public Enumeration keys()
+   {
+      return delegate.keys();
+   }
+
+   public Object put(Object key, Object value)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   public Object remove(Object key)
+   {
+      throw new UnsupportedOperationException();
+   }
+
+   public int size()
+   {
+      return delegate.size();
+   }
 }
