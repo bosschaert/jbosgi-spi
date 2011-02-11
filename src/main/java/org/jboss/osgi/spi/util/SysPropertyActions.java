@@ -27,9 +27,9 @@ import java.util.Properties;
 
 /**
  * Priviledged actions for the package
- *
+ * 
  * @author Scott.Stark@jboss.org
- * @author <a href="david@redhat.com">David Bosschaert</a>
+ * @author David Bosschaert
  */
 public class SysPropertyActions {
 
