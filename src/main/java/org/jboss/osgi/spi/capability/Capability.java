@@ -38,13 +38,13 @@ import org.osgi.framework.Version;
 
 /**
  * An abstract OSGi capability that can be installed in an OSGiRuntime.
- * 
+ *
  * The capability is only installed if the service name given in the constructor is not already registered with the OSGi
  * framework.
- * 
+ *
  * It maintains an ordered set of dependent capabilities and bundles that must be installed to provide the functionality
  * advertised by this capability.
- * 
+ *
  * @author thomas.diesler@jboss.com
  * @since 05-May-2009
  */
@@ -63,12 +63,12 @@ public abstract class Capability {
 
     /**
      * Construct a capability that is identified by the given service name.
-     * 
+     *
      * If the service name is already registered with the OSGiRuntime adding this capability does nothing.
-     * 
+     *
      * If the service name is null the capability will install each associated bundle unless a bundle with the same symbolic
      * name is already installed.
-     * 
+     *
      * @param serviceName The service that would be registered by this capability.
      */
     public Capability(String serviceName) {
@@ -77,7 +77,7 @@ public abstract class Capability {
 
     /**
      * Construct a capability that is identified by the given service name and filter string.
-     * 
+     *
      * If the service is already registered with the OSGiRuntime adding this capability does nothing.
      */
     public Capability(String serviceName, String filter) {
@@ -108,7 +108,7 @@ public abstract class Capability {
 
     /**
      * Add a system property provided by this capability.
-     * 
+     *
      * Adding this capability will set the associated system properties if a propperty is not set already.
      */
     public void addSystemProperty(String key, String value) {
@@ -191,7 +191,9 @@ public abstract class Capability {
     public void start(OSGiRuntime runtime) throws BundleException {
         log.debug("Start capability: " + this);
         for (OSGiBundle bundle : getInstalledBundles()) {
-            bundle.start();
+            if (bundle.getHeaders().get("Fragment-Host") == null)
+                // only start non-fragment bundles
+                bundle.start();
         }
     }
 

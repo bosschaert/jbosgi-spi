@@ -25,11 +25,12 @@ import org.osgi.service.log.LogService;
 
 /**
  * Adds the OSGi compedium LogService capability to the OSGiRuntime under test.
- * 
+ *
  * It is ignored if the {@link LogService} is already registered.
- * 
- * Installed bundles: org.apache.felix.log.jar, jboss-osgi-common.jar
- * 
+ *
+ * Installed bundles: org.apache.felix.log.jar, jboss-osgi-logging.jar
+ *   slf4j-api.jar, slf4j-log4j12.jar and jcl-over-slf4j.jar
+ *
  * @author thomas.diesler@jboss.com
  * @since 14-Sep-2009
  */
@@ -41,6 +42,9 @@ public class LogServiceCapability extends Capability {
         addDependency(new CompendiumCapability());
 
         addBundle("bundles/org.apache.felix.log.jar");
-        addBundle("bundles/jboss-osgi-common.jar");
+        addBundle("bundles/jboss-osgi-logging.jar");
+        addBundle("bundles/slf4j-api.jar");
+        addBundle("bundles/slf4j-log4j12.jar");
+        addBundle("bundles/jcl-over-slf4j.jar");
     }
 }
